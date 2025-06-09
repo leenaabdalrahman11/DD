@@ -1,0 +1,117 @@
+﻿<partial name="_ValidationScriptsPartial" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebApplication2</title>
+    <script type="importmap"></script>
+    <!-- Bootstrap CDN (اختياري لتسريع التحميل في حال lib فيها مشكلة) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+    <header>   
+        <nav class="navbar bg-body-tertiary fixed-top NAVV">
+            <div class="container-fluid">
+                <!-- Logo or Title -->
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img src="/Images/Logo.png" alt="Logo" style="height: 40px;" />
+                </a>
+
+                <!-- Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                        aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Offcanvas Menu -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Pricing</a>
+                            </li>
+                            @if (Context.Session.GetString("Token") == null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
+                                </li>
+                            }
+                            else
+                            {                            
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "Specialty")">Fields</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Auth" asp-action="Logout">Logout</a>
+                                </li>
+                            }
+                            @if (Context.Session.GetString("Role") == "Admin")
+                            {
+                                <a href="/Admin/Dashboard">Admin Panel</a>
+                            }
+                            else if (Context.Session.GetString("Role") == "Patient")
+                            {
+                                <a href="@Url.Action("MyAppointments", "Appointment")">My Appointments</a>
+                               
+                               
+
+                            }
+
+
+                        </ul>
+
+                        <!-- Search box (optional) -->
+                        <form class="d-flex mt-3" role="search">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-primary" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <!--
+    <div class="container">-->
+        <main role="main" class="">
+            @RenderBody()
+        </main>
+   <!-- </div>-->
+    
+
+    <!-- سكربتات -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- لا تكرر jquery من lib -->
+    <!-- <script src="~/lib/jquery/dist/jquery.min.js"></script> --> <!-- احذف هذا -->
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

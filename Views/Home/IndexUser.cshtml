@@ -1,0 +1,184 @@
+﻿@model WebApplication2.Models.HomePageViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+        <div class="Home">
+            <div class="ContainerHome">
+	        	<h1 class="display-4">Welcome to MediTrack</h1>
+	           	<p class="lead mb-4">Medical specialties management system</p>
+
+		<form class="d-flex justify-content-center mb-4" method="get" asp-action="Search" asp-controller="DoctorProfile">
+			<input type="text" name="query" class="form-control w-50" placeholder="ابحث عن اسم دكتور أو تخصص..." />
+			<button class="btn btn-primary ms-2">بحث</button>
+		</form>
+
+
+		<a href="@Url.Action("Index", "Specialty")" class="btn btn-custom">View Specialties</a>
+        @if (Context.Session.GetString("Role") == "Admin")
+        {
+        <a class="btn btn-custom" href="@Url.Action("AllUsers", "Auth")">عرض المستخدمين</a>
+        }
+
+
+	</div>
+
+        </div>
+
+    <!-- ✅ سكشن الدكاترة - مفصول بالكامل -->
+    <section class="position-relative bg-light py-5">
+    <div class="container position-relative">
+        <h3 class="mb-4 text-center text-dark">الدكاترة الأعلى تقييماً</h3>
+
+        <!-- أزرار التنقل -->
+        <button type="button"
+                onclick="scrollDoctorLeft()" 
+                class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1">
+            <i class="bi bi-chevron-left fs-4"></i>
+        </button>
+
+        <button type="button"
+                onclick="scrollDoctorRight()"
+                class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1">
+            <i class="bi bi-chevron-right fs-4"></i>
+        </button>
+
+        <!-- المحتوى القابل للتمرير -->
+        <div id="doctorScroll" class="d-flex flex-nowrap overflow-auto gap-3 px-5">
+            @foreach (var doc in Model.Doctors)
+            {
+                <a href="@Url.Action("Details", "DoctorProfile", new { id = doc.DoctorID })" class="text-decoration-none text-dark">
+                    <div class="card flex-shrink-0 shadow-sm" style="width: 250px;">
+                        <img src="@Url.Action("GetPhoto", "DoctorProfile", new { id = doc.DoctorID })"
+                             class="card-img-top" style="width: 100%; height: 250px; object-fit: cover;" />
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">@doc.DoctorName</h6>
+                            <p class="text-muted small">
+                                <i class="bi bi-geo-alt-fill text-primary"></i> @doc.ClinicAddress
+                            </p>
+                            <span class="badge bg-warning text-dark">⭐ @doc.Rating</span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="position-relative bg-light py-5">
+    <div class="container">
+        <h3 class="mb-4 text-center text-dark">اختر التخصص</h3>
+
+        <button onclick="scrollSpecialtyLeft()" class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <button onclick="scrollSpecialtyRight()" class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+
+        <div id="specialtyScroll" class="d-flex flex-nowrap overflow-auto gap-3 px-5">
+            @foreach (var item in Model.Specialties)
+            {
+                <a href="@Url.Action("getSpacilityDetails", "Specialty", new { id = item.SpecialtyID })" class="text-decoration-none text-dark">
+                    <div class="card flex-shrink-0 shadow-sm text-center" style="width: 250px;">
+                        @if (item.Photo != null)
+                        {
+                            <img src="@Url.Action("GetPhoto", "Specialty", new { id = item.SpecialtyID })"
+                                 class="card-img-top" style="height: 150px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 150px;">
+                                No image
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h6 class="fw-bold">@item.Name</h6>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="about-section text-white d-flex align-items-center justify-content-center py-5" style="background: linear-gradient(to right, #258da3, #1a6d80);">
+    <div class="glass-box text-center p-4 rounded shadow" style="max-width: 700px; backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <h3 class="mb-3 fw-bold text-white">من نحن؟</h3>
+        <p class="mb-0 fs-5 text-light">
+            <strong>MediTrack</strong> هي منصة متكاملة لإدارة المواعيد الطبية بسهولة وسرعة.  
+            نساعدك في الوصول لأفضل الأطباء في مجالك خلال بضع نقرات فقط، لتجربة صحية ذكية وآمنة.
+        </p>
+    </div>
+</section>
+
+<section class="container my-4 p-3 rounded shadow-sm" style="background-color: #f9f9f9; max-width: 600px;">
+    <h4 class="mb-3 text-center text-dark">Quick Booking</h4>
+
+    <form asp-action="BookSimple" asp-controller="Appointment" method="post" class="mx-auto">
+        <div class="mb-2">
+            <label class="form-label fw-semibold small">Doctor Name</label>
+            <select class="form-select form-select-sm" name="DoctorName" required>
+                <option value="">-- Select Doctor --</option>
+                @foreach (var doc in Model.Doctors)
+                {
+                    <option value="@doc.DoctorName">@doc.DoctorName</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label fw-semibold small">Date & Time</label>
+            <input type="datetime-local" class="form-control form-control-sm" name="DateTime" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Reason</label>
+            <textarea class="form-control form-control-sm" name="Reason" rows="2" placeholder="e.g., Headache or follow-up" required></textarea>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success btn-sm px-4 py-1">
+                <i class="bi bi-calendar-check"></i> Book Now
+            </button>
+        </div>
+    </form>
+</section>
+
+
+
+<script>
+    function scrollDoctorLeft() {
+        const container = document.getElementById("doctorScroll");
+        if (container) {
+            container.scrollBy({ left: -300, behavior: 'smooth' });
+        }
+    }
+
+    function scrollDoctorRight() {
+        const container = document.getElementById("doctorScroll");
+        if (container) {
+            container.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+    }
+
+    function scrollSpecialtyLeft() {
+        const container = document.getElementById("specialtyScroll");
+        if (container) {
+            container.scrollBy({ left: -300, behavior: 'smooth' });
+        }
+    }
+
+    function scrollSpecialtyRight() {
+        const container = document.getElementById("specialtyScroll");
+        if (container) {
+            container.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+    }
+</script>
+
+
+

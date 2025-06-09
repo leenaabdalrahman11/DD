@@ -1,0 +1,164 @@
+﻿@model WebApplication2.Models.DoctorProfile
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<div class="container mt-5">
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+		
+        <form asp-controller="DoctorProfile" asp-action="UploadPhoto" enctype="multipart/form-data" method="post">
+			<input type="hidden" name="id" value="@Model.DoctorID" />
+			<input type="file" name="photo" />
+			<button type="submit">Upload</button>
+		</form>
+
+    }
+    @if (Model.Photo != null)
+    {
+        <img src="@Url.Action("GetDoctorPhoto", "DoctorProfile", new { id = Model.DoctorID })" width="150" />
+
+    }
+
+	<h2>@Model.DoctorName</h2>
+    <p><strong>Bio :</strong> @Model.Bio</p>
+    @if (Context.Session.GetString("Role") == "Doctor" &&
+    Context.Session.GetInt32("UserID") == Model.UserID)
+    {
+        <!-- زر عرض الفورم -->
+        <button class="btn btn-warning mt-2" onclick="toggleBioForm()">Edit Bio</button>
+
+        <!-- فورم تعديل البيو (مخفي بالبداية) -->
+        <div id="bioForm" class="mt-3" style="display: none;">
+            <form asp-action="UpdateBio" asp-controller="DoctorProfile" method="post">
+                <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+                <div class="form-group">
+                    <label for="bio">Edit Bio</label>
+                    <textarea class="form-control" name="Bio" rows="4">@Model.Bio</textarea>
+                </div>
+                <button type="submit" class="btn btn-warning mt-2">Save Bio</button>
+            </form>
+        </div>
+    }
+
+
+<p><strong>Clinic:</strong> @Model.ClinicAddress</p>
+<p><strong>Available:</strong> @Model.AvailableDays</p>
+	<p><strong>Rating:</strong> @Model.Rating</p>
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+        <button class="btn btn-warning mt-2" onclick="toggleAdminEditForm()">Edit Info</button>
+
+        <div id="adminEditForm" class="mt-3" style="display: none;">
+            <form asp-action="UpdateDoctorInfo" asp-controller="DoctorProfile" method="post">
+                <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+
+                <div class="form-group">
+                    <label>Doctor Name</label>
+                    <input type="text" class="form-control" name="DoctorName" value="@Model.DoctorName" />
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea class="form-control" name="Bio" rows="4">@Model.Bio</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Clinic Address</label>
+                    <input type="text" class="form-control" name="ClinicAddress" value="@Model.ClinicAddress" />
+                </div>
+
+                <div class="form-group">
+                    <label>Available Days</label>
+                    <input type="text" class="form-control" name="AvailableDays" value="@Model.AvailableDays" />
+                </div>
+
+                <div class="form-group">
+                    <label>Rating</label>
+                    <input type="number" step="0.1" min="0" max="5" class="form-control" name="Rating" value="@Model.Rating" />
+                </div>
+
+                <button type="submit" class="btn btn-success mt-2">Save Changes</button>
+            </form>
+        </div>
+    }
+
+
+   
+    @if (Context.Session.GetString("Token") != null && Context.Session.GetString("Role") == "Patient")
+    {
+        <form asp-controller="Appointment" asp-action="Create" method="post">
+            <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+            <input type="hidden" name="PatientID" value="@Context.Session.GetInt32("UserID")" />
+
+            <div class="form-group">
+                <label>Choose Day</label>
+                <select class="form-control" name="SelectedDay" required>
+                    @{
+                        var availableDays = Model.AvailableDays?.Split(',') ?? new string[] { };
+                        foreach (var shortDay in availableDays)
+                        {
+                            string fullDay = shortDay.Trim() switch
+                            {
+                                "Mon" => "Monday",
+                                "Tue" => "Tuesday",
+                                "Wed" => "Wednesday",
+                                "Thu" => "Thursday",
+                                "Fri" => "Friday",
+                                "Sat" => "Saturday",
+                                "Sun" => "Sunday",
+                                _ => null
+                            };
+
+                            if (fullDay != null)
+                            {
+                                <option value="@fullDay">@fullDay</option>
+                            }
+
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="DateTime">Appointment Date & Time</label>
+                <input name="DateTime" type="datetime-local" class="form-control" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Reason">Reason</label>
+                <input name="Reason" class="form-control" required />
+            </div>
+
+            <input type="hidden" name="Status" value="booked" />
+
+
+            <button type="submit" class="btn btn-primary mt-2">Book appointment</button>
+        </form>
+        }
+
+    @if (Context.Session.GetString("Role") == "Doctor" &&
+    Context.Session.GetInt32("DoctorID") == Model.DoctorID || Context.Session.GetString("Role") == "Admin")
+    {
+        <a class="btn btn-warning mt-2"
+           asp-controller="DoctorProfile"
+           asp-action="EditAvailableDays"
+           asp-route-id="@Model.DoctorID">
+            Edit Available Days
+        </a>
+    }
+
+
+</div>
+<script>
+    function toggleBioForm() {
+        const form = document.getElementById("bioForm");
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+</script>
+<script>
+	function toggleAdminEditForm() {
+		const form = document.getElementById("adminEditForm");
+		form.style.display = form.style.display === "none" ? "block" : "none";
+	}
+</script>

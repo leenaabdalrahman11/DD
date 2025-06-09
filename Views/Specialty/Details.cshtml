@@ -1,0 +1,11 @@
+﻿@model WebApplication2.Models.Specialty
+
+<h2>Specialty Details</h2>
+
+<p><strong>Name:</strong> @Model.Name</p>
+<p><strong>Description:</strong> @Model.Description</p>
+
+@if (Model.Photo != null)
+{
+    <img src="@Url.Action("GetPhoto", "Specialty", new { id = Model.SpecialtyID })" width="200" />
+}

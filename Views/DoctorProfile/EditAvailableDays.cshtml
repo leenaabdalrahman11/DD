@@ -1,0 +1,28 @@
+﻿@model WebApplication2.Models.DoctorProfile
+
+<h3>تعديل الأيام المتاحة</h3>
+
+<form asp-action="UpdateAvailableDays" asp-controller="DoctorProfile" method="post">
+    <input type="hidden" name="DoctorID" value="@Model.DoctorID" />
+
+    <div class="form-group">
+        <label>Edit Available Days:</label><br />
+        @{
+            string[] allDays = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+            var selected = Model.AvailableDays?.Split(',') ?? new string[] { };
+
+            foreach (var day in allDays)
+            {
+                <label>
+                    <input type="checkbox" name="SelectedDays" value="@day"
+                    @(selected.Contains(day) ? "checked" : "") />
+                    @day
+                </label>
+
+                <br />
+            }
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">save</button>
+</form>

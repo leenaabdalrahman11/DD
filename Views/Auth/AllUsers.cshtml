@@ -1,0 +1,52 @@
+﻿@model List<WebApplication2.Models.AppUser>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered mt-5">
+    <thead class="table-light">
+        <tr>
+            <th>الاسم</th>
+            <th>البريد الإلكتروني</th>
+            <th>رقم الهاتف</th>
+            <th>الدور</th>
+            <th>حفظ</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <form asp-action="UpdateUser" asp-controller="Auth" method="post">
+                    <input type="hidden" name="UserID" value="@user.UserID" />
+                <td>
+                    <input type="text" name="FullName" value="@user.FullName" class="form-control" />
+                </td>
+                <td>@user.Email</td>
+                <td>
+                    <input type="text" name="Phone" value="@user.Phone" class="form-control" />
+                </td>
+                <td>
+                    <select name="Role" class="form-select">
+                        <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                        <option value="Doctor" selected="@(user.Role == "Doctor")">Doctor</option>
+                        <option value="Patient" selected="@(user.Role == "Patient")">Patient</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-sm btn-primary">💾 حفظ</button>
+                </td>
+                </form>
+                <td>
+                    <form asp-action="DeleteUser" asp-controller="Auth" method="post" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟');">
+                        <input type="hidden" name="id" value="@user.UserID" />
+                        <button type="submit" class="btn btn-sm btn-danger">🗑 حذف</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

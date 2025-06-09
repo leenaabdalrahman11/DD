@@ -1,0 +1,36 @@
+﻿// Views/Appointment/Index.cshtml
+@model List<WebApplication2.Models.Appointment>
+
+<h2>Appointments</h2>
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>AppointmentID</th>
+            <th>DoctorID</th>
+            <th>PatientID</th>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.AppointmentID</td>
+                <td>@item.DoctorID</td>
+                <td>@item.PatientID</td>
+                <td>@item.DateTime</td>
+                <td>@item.Reason</td>
+                <td>@item.Status</td>
+                <td>
+                    <form asp-action="Delete" asp-controller="Appointment" method="post" onsubmit="return confirm('هل أنت متأكد من حذف الموعد؟');">
+                        <input type="hidden" name="appointmentId" value="@item.AppointmentID" />
+                        <button type="submit" class="btn btn-danger btn-sm">🗑 حذف</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

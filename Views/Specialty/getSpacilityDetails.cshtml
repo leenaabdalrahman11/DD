@@ -1,0 +1,89 @@
+﻿@model WebApplication2.Models.SpecialtyDetailsViewModel
+
+<div class="container py-5">
+
+    <!-- ✅ معلومات التخصص -->
+	<div class="text-center mb-5">
+		<h2 class="fw-bold text-dark">@Model.Specialty.Name</h2>
+		<p class="lead text-muted">@Model.Specialty.Description</p>
+
+		@if (Model.Specialty.Photo != null)
+		{
+			<div class="d-flex justify-content-center mt-3">
+				<img src="@Url.Action("GetPhoto", "Specialty", new { id = Model.Specialty.SpecialtyID })"
+					 class="img-fluid rounded shadow"
+					 style="max-width: 300px; height: auto;" />
+			</div>
+		}
+
+		@if (Context.Session.GetString("Role") == "Admin")
+        {
+            <form asp-action="EditSpecialty" asp-controller="Specialty" method="post" enctype="multipart/form-data" class="w-50 mx-auto">
+                <input type="hidden" name="SpecialtyID" value="@Model.Specialty.SpecialtyID" />
+
+                <div class="mb-3">
+                    <label>الاسم</label>
+                    <input type="text" name="Name" value="@Model.Specialty.Name" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label>الوصف</label>
+                    <textarea name="Description" class="form-control" rows="4" required>@Model.Specialty.Description</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>صورة جديدة (اختياري)</label>
+                    <input type="file" name="Photo" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+            </form>
+        }
+
+
+    </div>
+
+
+    <hr class="my-4" />
+
+    <!-- ✅ قائمة الأطباء -->
+    <div class="text-center mb-4">
+        <h3 class="text-dark mb-4">الأطباء في هذا التخصص</h3>
+
+        @if (Model.Doctors.Count == 0)
+        {
+            <div class="alert alert-warning w-50 mx-auto">
+                لا يوجد أطباء في هذا التخصص حاليًا.
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                @foreach (var doc in Model.Doctors)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4 d-flex justify-content-center">
+                        <a asp-controller="DoctorProfile" asp-action="Details" asp-route-id="@doc.DoctorID"
+                           class="text-decoration-none text-dark w-100" style="max-width: 300px;">
+                            <div class="card h-100 border-0 shadow-sm text-center">
+                                <div class="card-body">
+                                    <h5 class="fw-semibold">@doc.DoctorName</h5>
+                                    <p class="text-muted mb-0">
+                                        <i class="bi bi-geo-alt-fill text-dark"></i> @doc.ClinicAddress
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- ✅ زر العودة -->
+    <div class="text-center">
+        <a asp-action="Index" asp-controller="Specialty" class="btn text-dark">
+            العودة إلى التخصصات
+        </a>
+    </div>
+
+</div>

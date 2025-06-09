@@ -1,0 +1,204 @@
+﻿/*html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+body {
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}*/
+/* بدلاً من */
+.mydiv[b-amt9qciysm] {
+    color: red;
+}
+
+/* استخدم */
+.mydiv {
+    color: red;
+}
+.LogoImg {
+    width: 60px;
+    height: 60px;
+  
+}
+.ContainerListNav {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.ContainerHome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+    width: 100%;
+}
+.Home {
+    background-image: url('/Images/Background.png');
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    color: white;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    width: 100%;
+}
+.main{
+    background-color: red;
+}
+.Specialty {
+    background-color: #258da3;
+    
+}
+body {
+    padding-top: 20px;
+    background-color: #258da3;
+    display: flex;
+    flex-direction: column;
+    
+    align-content:center;
+    
+}
+
+
+.NAVV {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    position: fixed;
+    background-color: #258da3;
+}
+.Specialty h2 {
+   color: white;
+   text-align: center;
+   margin-top: 20px;
+   margin-bottom:40px;
+}
+.welcome-container {
+    height: 60vh;
+   
+    width: 70%;
+    display: flex;
+    flex-wrap:wrap;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+    text-align: center;
+}
+
+.btn-custom {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 14px;
+    background-color: #bff0fe;
+}
+
+.scroll-container {
+  
+    overflow-x: hidden; /* ← لإخفاء الشريط */
+
+    white-space: nowrap;
+    padding-bottom: 10px;
+}
+
+    .scroll-container::-webkit-scrollbar {
+        height: 10px;
+    }
+#doctorScroll {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+.about-section {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    min-height: 300px;
+    padding: 50px 20px;
+    position: relative;
+}
+
+.glass-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+    #doctorScroll::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
+
+    .scroll-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+.specialty-img {
+    width:100%;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+.Home .text-center {
+    padding-top: 80px;
+    padding-bottom: 40px;
+}
+
+form.d-flex.justify-content-center.mb-5 {
+    margin-top: 20px;
+    margin-bottom: 30px !important;
+}
+
+.display-4 {
+    font-size: 2.5rem;
+}
+
+.hero-section {
+    background-image: url('/images/your-bg.jpg'); /* أو احذف لو مش لازم */
+    background-size: cover;
+    background-position: center;
+    padding: 60px 20px;
+    border-radius: 12px;
+    color: white;
+}

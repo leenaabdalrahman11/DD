@@ -1,0 +1,30 @@
+﻿@model List<WebApplication2.Models.DoctorProfile>
+
+<h3 class="mb-4 text-center">نتائج البحث</h3>
+
+@if (Model == null || !Model.Any())
+{
+    <p class="text-center text-danger">لا توجد نتائج مطابقة للبحث.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var doc in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="@Url.Action("GetPhoto", "DoctorProfile", new { id = doc.DoctorID })"
+                         class="card-img-top" style="height: 220px; object-fit: contain;" />
+                    <div class="card-body text-center">
+                        <h6 class="fw-bold">@doc.DoctorName</h6>
+                        <p class="text-muted small">@doc.Bio</p>
+                        <p class="text-muted small">
+                            <i class="bi bi-geo-alt-fill text-primary"></i> @doc.ClinicAddress
+                        </p>
+                        <span class="badge bg-warning text-dark">⭐ @doc.Rating</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

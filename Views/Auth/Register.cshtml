@@ -1,0 +1,152 @@
+﻿@model WebApplication2.Models.AppUser
+
+@{
+    ViewBag.Title = "التسجيل";
+    var specialties = ViewBag.Specialties as List<WebApplication2.Models.Specialty>; // أو اسم النيمسبيس حسب مشروعك
+}
+
+<h2 class="mt-4">📝 التسجيل</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form asp-action="Register" asp-controller="Auth" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label class="form-label">الاسم الكامل</label>
+        <input asp-for="FullName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input asp-for="Email" type="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">كلمة المرور</label>
+        <input asp-for="PasswordHash" type="password" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">رقم الهاتف</label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">الدور</label>
+        <select asp-for="Role" class="form-select" id="roleSelect" onchange="toggleFields()" required>
+            <option value="">اختر...</option>
+            <option value="Patient">مريض</option>
+            <option value="Doctor">دكتور</option>
+        </select>
+    </div>
+
+    <!-- Patient Fields -->
+    <div id="patientFields" style="display:none;">
+        <div class="mb-3">
+            <label class="form-label">تاريخ الميلاد</label>
+            <input asp-for="DateOfBirth" type="date" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">الجنس</label>
+            <select asp-for="Gender" class="form-select">
+                <option value="">اختر</option>
+                <option value="Male">ذكر</option>
+                <option value="Female">أنثى</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">العنوان</label>
+            <input asp-for="Address" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Doctor Fields -->
+    <div id="doctorFields" style="display:none;">
+        <div class="mb-3">
+            <label class="form-label">نبذة عن الطبيب</label>
+            <textarea asp-for="Bio" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">اختر التخصص</label>
+            <select asp-for="SpecialtyID" class="form-select" required>
+                <option value="">-- اختر --</option>
+                @foreach (var s in ViewBag.Specialties as List<WebApplication2.Models.Specialty>)
+                {
+                    <option value="@s.SpecialtyID">@s.Name</option>
+                }
+            </select>
+        </div>
+        <!--
+		<div class="mb-3">
+			<label class="form-label">التقييم</label>
+			<input asp-for="Rating" type="number" step="0.1" class="form-control" />
+		</div>
+
+		-->
+
+        <div class="mb-3">
+            <label class="form-label">أيام التوفر</label>
+            <div id="availableDaysCheckboxes" class="form-check">
+                <div><input type="checkbox" class="form-check-input" value="Sun" onchange="updateAvailableDays()" /> الأحد</div>
+                <div><input type="checkbox" class="form-check-input" value="Mon" onchange="updateAvailableDays()" /> الإثنين</div>
+                <div><input type="checkbox" class="form-check-input" value="Tue" onchange="updateAvailableDays()" /> الثلاثاء</div>
+                <div><input type="checkbox" class="form-check-input" value="Wed" onchange="updateAvailableDays()" /> الأربعاء</div>
+                <div><input type="checkbox" class="form-check-input" value="Thu" onchange="updateAvailableDays()" /> الخميس</div>
+                <div><input type="checkbox" class="form-check-input" value="Fri" onchange="updateAvailableDays()" /> الجمعة</div>
+                <div><input type="checkbox" class="form-check-input" value="Sat" onchange="updateAvailableDays()" /> السبت</div>
+            </div>
+
+            <!-- الحقل المخفي الذي سيتم إرساله للسيرفر -->
+            <input type="hidden" asp-for="AvailableDays" id="availableDaysInput" />
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">عنوان العيادة</label>
+            <input asp-for="ClinicAddress" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">صورة الطبيب (اختياري)</label>
+            <input type="file" name="PhotoFile" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">تسجيل</button>
+</form>
+
+@section Scripts {
+    <script>
+        function toggleFields() {
+            var role = document.getElementById("roleSelect").value;
+            document.getElementById("patientFields").style.display = (role === "Patient") ? "block" : "none";
+            document.getElementById("doctorFields").style.display = (role === "Doctor") ? "block" : "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleFields();
+
+            const select = document.getElementById("availableDaysSelect");
+            const hiddenInput = document.getElementById("availableDaysInput");
+
+            select.addEventListener("change", function () {
+                const selected = Array.from(select.selectedOptions).map(opt => opt.value);
+                hiddenInput.value = selected.join(',');
+            });
+        });
+    </script>
+    <script>
+        function updateAvailableDays() {
+            const checkboxes = document.querySelectorAll("#availableDaysCheckboxes input[type='checkbox']");
+            const selected = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            document.getElementById("availableDaysInput").value = selected.join(',');
+        }
+
+        document.addEventListener("DOMContentLoaded", updateAvailableDays);
+    </script>
+
+}
+

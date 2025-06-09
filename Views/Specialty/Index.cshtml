@@ -1,0 +1,51 @@
+﻿@model List<WebApplication2.Models.Specialty>
+
+
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title></title>
+    </head>
+<body class="Specialty">
+    <div class="container mt-5">
+    <h2 style="color:#053c61">Choose the medical field you want to search in</h2>
+    <div id="specialtyCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var item = Model[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    @if (item.Photo != null)
+                    {
+                        <img src="@Url.Action("GetPhoto", "Specialty", new { id = item.SpecialtyID })" class="specialty-img d-block w-50 mx-auto rounded" alt="@item.Name" />
+                        <h5 class="text-center mt-2">
+                            <a href="@Url.Action("getSpacilityDetails", "Specialty", new { id = item.SpecialtyID })" class="text-decoration-none text-dark">
+                                @item.Name
+                            </a>
+                        </h5>
+                    }
+                    else
+                    {
+                        <div class="text-center">No image</div>
+                    }
+              <!--     <div class="carousel-caption d-none d-md-block">
+                        <h5>@item.Name</h5>
+                        <p>@item.Description</p>
+                    </div>-->
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#specialtyCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#specialtyCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    </div>
+
+</body>
+    </html>
