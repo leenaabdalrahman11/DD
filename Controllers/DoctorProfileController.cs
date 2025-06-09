@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using WebApplication1.Data;
 using WebApplication2.Models;
 
@@ -35,13 +36,26 @@ public class DoctorProfileController : Controller
     }
     public IActionResult Details(int id)
     {
-        // يجب أن تبحث عن الدكتور باستخدام id
         var doctor = db.DoctorProfile.FirstOrDefault(d => d.DoctorID == id);
         if (doctor == null)
+        {
             return NotFound();
+        }
 
-        return View(doctor);
+        var reviews = db.Review
+            .Where(r => r.DoctorID == id)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToList();
+
+        var viewModel = new DoctorProfileWithReviewsViewModel
+        {
+            Doctor = doctor,
+            Reviews = reviews
+        };
+
+        return View(viewModel); // هذا هو المهم! نرسل ViewModel وليس Doctor فقط
     }
+
     [HttpPost]
     public async Task<IActionResult> UploadPhoto(int id, IFormFile photo)
     {
@@ -216,7 +230,7 @@ public class DoctorProfileController : Controller
     }
     [HttpPost]
     [HttpPost]
-    public IActionResult UpdateDoctorInfo(int DoctorID, string DoctorName, string Bio, string ClinicAddress, string AvailableDays, float Rating)
+    public IActionResult UpdateDoctorInfo(int DoctorID, string DoctorName, string Bio, string ClinicAddress, string AvailableDays)
     {
         using (SqlConnection conn = new SqlConnection(connectionString))
         {
@@ -225,8 +239,7 @@ public class DoctorProfileController : Controller
                        SET DoctorName = @DoctorName,
                            Bio = @Bio,
                            ClinicAddress = @Clinic,
-                           AvailableDays = @Days,
-                           Rating = @Rating 
+                           AvailableDays = @Days
                        WHERE DoctorID = @id";
 
             using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -235,7 +248,7 @@ public class DoctorProfileController : Controller
                 cmd.Parameters.AddWithValue("@Bio", Bio);
                 cmd.Parameters.AddWithValue("@Clinic", ClinicAddress);
                 cmd.Parameters.AddWithValue("@Days", AvailableDays);
-                cmd.Parameters.AddWithValue("@Rating", Rating);
+          
                 cmd.Parameters.AddWithValue("@id", DoctorID);
                 cmd.ExecuteNonQuery();
             }
@@ -243,4 +256,11 @@ public class DoctorProfileController : Controller
 
         return RedirectToAction("Details", new { id = DoctorID });
     }
+    public virtual ICollection<Review> Reviews { get; set; }
+
+    [NotMapped]
+    public double AverageRating => Reviews != null && Reviews.Any()
+        ? Reviews.Average(r => r.Rating)
+        : 0;
+
 }

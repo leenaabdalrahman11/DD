@@ -4,5 +4,6 @@
     {
         public List<DoctorProfile> Doctors { get; set; }
         public List<Specialty> Specialties { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

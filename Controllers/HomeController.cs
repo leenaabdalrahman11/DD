@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication2.Models;
 
@@ -44,15 +45,24 @@ namespace WebApplication2.Controllers
             }
 
             var topDoctors = dp.DoctorProfile
-                               .OrderByDescending(d => d.Rating)
+                               .Include(d => d.Reviews)
+                               .ToList()
+                               .OrderByDescending(d => d.Reviews.Any() ? d.Reviews.Average(r => r.Rating) : 0)
                                .ToList();
+            var reviews = dp.Review
+                .Include(r => r.Patient)
+                .OrderByDescending(r => r.CreatedAt)
+                .Take(10)
+                .ToList();
+
 
             var specialties = dp.Specialty.ToList();
 
             var viewModel = new HomePageViewModel
             {
                 Doctors = topDoctors,
-                Specialties = specialties
+                Specialties = specialties,
+                Reviews = reviews
             };
 
             return View(viewModel);

@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication2.Models
 {
+    [Table("Appointment")]
+
     public class Appointment
     {
         [Key]

@@ -113,7 +113,8 @@ namespace WebApplication2.Controllers
 
 
         [HttpPost]
-        public IActionResult Register(AppUser model)
+        public IActionResult Register(RegisterViewModel model)
+
         {
             int newUserId;
 
@@ -152,14 +153,16 @@ namespace WebApplication2.Controllers
 
                 // رفع صورة الطبيب (إن وجدت)
                 byte[] photoBytes = null;
-                if (Request.Form.Files.Count > 0)
+               
+                if (model.PhotoFile != null)
                 {
                     using (var ms = new MemoryStream())
                     {
-                        Request.Form.Files[0].CopyTo(ms);
+                        model.PhotoFile.CopyTo(ms);
                         photoBytes = ms.ToArray();
                     }
                 }
+
 
                 // إذا كان مريض
                 if (model.Role == "Patient")
